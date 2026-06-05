@@ -439,12 +439,26 @@
       </div>
       <div class="modal-body">
         <div class="form-group">
-          <label class="form-label">ID de Usuario *</label>
-          <input type="text" class="form-input" id="prestamoUsuarioId" placeholder="Ej: user-001" />
+          <label class="form-label">Usuario *</label>
+          <div class="searchable-select" id="prestamoUsuarioSelect">
+            <div class="ss-control" id="prestamoUsuarioControl">
+              <input type="text" class="ss-input" id="prestamoUsuarioSearch" placeholder="Buscar usuario por nombre o ID…" autocomplete="off" />
+              <svg class="ss-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="ss-dropdown hidden" id="prestamoUsuarioDropdown"></div>
+            <input type="hidden" id="prestamoUsuarioId" />
+          </div>
         </div>
         <div class="form-group">
-          <label class="form-label">Código del Libro *</label>
-          <input type="text" class="form-input" id="prestamoLibroCodigo" placeholder="Ej: LIB-001" />
+          <label class="form-label">Libro *</label>
+          <div class="searchable-select" id="prestamoLibroSelect">
+            <div class="ss-control" id="prestamoLibroControl">
+              <input type="text" class="ss-input" id="prestamoLibroSearch" placeholder="Buscar libro por título o código…" autocomplete="off" />
+              <svg class="ss-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="ss-dropdown hidden" id="prestamoLibroDropdown"></div>
+            <input type="hidden" id="prestamoLibroCodigo" />
+          </div>
         </div>
       </div>
       <div class="modal-footer">
@@ -482,30 +496,50 @@
   </div>
 
   <!-- Modal: Nueva Reserva -->
-  <div class="modal-overlay hidden" id="modalReserva">
-    <div class="modal">
-      <div class="modal-header">
-        <h2 class="modal-title">Nueva Reserva</h2>
-        <button class="modal-close" data-close="modalReserva">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label class="form-label">ID de Usuario *</label>
-          <input type="text" class="form-input" id="reservaUsuarioId" placeholder="Ej: user-001" />
+<div class="modal-overlay hidden" id="modalReserva">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title">Nueva Reserva</h2>
+      <button class="modal-close" data-close="modalReserva">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Usuario *</label>
+        <div class="searchable-select" id="reservaUsuarioSelect">
+          <div class="ss-control" id="reservaUsuarioControl">
+            <input type="text" class="ss-input" id="reservaUsuarioSearch" placeholder="Buscar usuario por nombre o ID…" autocomplete="off" />
+            <svg class="ss-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>
+          <div class="ss-dropdown hidden" id="reservaUsuarioDropdown"></div>
+          <input type="hidden" id="reservaUsuarioId" />
         </div>
-        <div class="form-group">
-          <label class="form-label">Código del Libro *</label>
-          <input type="text" class="form-input" id="reservaLibroCodigo" placeholder="Ej: LIB-001" />
-        </div>
       </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" data-close="modalReserva">Cancelar</button>
-        <button class="btn btn-primary" id="btnGuardarReserva">Reservar</button>
+      <div class="form-group">
+        <label class="form-label">Libro *</label>
+        <div class="searchable-select" id="reservaLibroSelect">
+          <div class="ss-control" id="reservaLibroControl">
+            <input type="text" class="ss-input" id="reservaLibroSearch" placeholder="Buscar libro por título o código…" autocomplete="off" />
+            <svg class="ss-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>
+          <div class="ss-dropdown hidden" id="reservaLibroDropdown"></div>
+          <input type="hidden" id="reservaLibroCodigo" />
+        </div>
       </div>
     </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-close="modalReserva">Cancelar</button>
+      <button class="btn btn-primary" id="btnGuardarReserva">Reservar</button>
+    </div>
   </div>
+</div>
 
   <!-- Modal: Cancelar Reserva -->
   <div class="modal-overlay hidden" id="modalCancelarReserva">

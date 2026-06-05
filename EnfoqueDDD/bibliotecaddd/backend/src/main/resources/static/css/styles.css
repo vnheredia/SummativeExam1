@@ -950,3 +950,290 @@ body {
   color: var(--rose);
   border-color: var(--rose);
 }
+
+/* =============================================
+   SEARCHABLE SELECT COMPONENT
+   ============================================= */
+
+.searchable-select {
+  position: relative;
+  width: 100%;
+}
+
+.ss-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0 12px;
+  cursor: pointer;
+  transition: border-color var(--t), box-shadow var(--t);
+}
+
+.ss-control:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent);
+}
+
+.ss-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  padding: 10px 0;
+  min-width: 0;
+}
+
+.ss-input::placeholder {
+  color: var(--text-muted);
+}
+
+.ss-arrow {
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: transform var(--t);
+  pointer-events: none;
+}
+
+.ss-control.open .ss-arrow {
+  transform: rotate(180deg);
+}
+
+.ss-selected-display {
+  flex: 1;
+  font-size: 0.9rem;
+  padding: 10px 0;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ss-clear {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: color var(--t), background var(--t);
+}
+
+.ss-clear:hover {
+  color: var(--rose);
+  background: var(--rose-bg);
+}
+
+.ss-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  z-index: 9999;
+  max-height: 220px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.ss-dropdown.hidden {
+  display: none;
+}
+
+.ss-option {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background var(--t);
+  border-bottom: 1px solid var(--border);
+}
+
+.ss-option:last-child {
+  border-bottom: none;
+}
+
+.ss-option:hover,
+.ss-option.focused {
+  background: var(--bg-overlay);
+}
+
+.ss-option-main {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ss-option-sub {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ss-option-sub .ss-badge-stock {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 9px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  margin-left: 6px;
+}
+
+.ss-option-sub .ss-badge-stock.ok   { background: var(--green-bg); color: var(--green); }
+.ss-option-sub .ss-badge-stock.low  { background: var(--amber-bg); color: var(--amber); }
+.ss-option-sub .ss-badge-stock.zero { background: var(--rose-bg);  color: var(--rose);  }
+
+.ss-empty {
+  padding: 14px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.ss-loading {
+  padding: 14px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.ss-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: ss-spin 0.7s linear infinite;
+}
+
+@keyframes ss-spin {
+  to { transform: rotate(360deg); }
+}
+
+mark.ss-hl {
+  background: color-mix(in srgb, var(--accent) 25%, transparent);
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+/* =============================================
+   MODAL SPECIFIC FOR RESERVA/PRESTAMO
+   ============================================= */
+
+/* Modals más amplios y con padding generoso */
+.modal {
+  max-width: 560px;   /* antes 480px */
+  width: 90vw;
+}
+
+.modal-body {
+  padding: 28px 28px;  /* antes 24px */
+  gap: 24px;           /* antes 16px */
+}
+
+.modal-footer {
+  padding: 20px 28px;  /* un poco más de espacio */
+}
+/* Searchable Select dentro de modales */
+.searchable-select {
+  width: 100%;
+}
+
+.ss-control {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;        /* más redondeado */
+  padding: 4px 14px;          /* más espacio interno */
+  transition: all 0.2s ease;
+}
+
+.ss-input {
+  font-size: 0.95rem;         /* texto un poco más grande */
+  padding: 12px 0;            /* más altura en el campo */
+}
+
+.ss-arrow {
+  margin-left: 8px;
+}
+
+/* Cuando el dropdown está abierto, resaltamos el borde */
+.ss-control.open {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(124, 110, 245, 0.2);
+}
+
+/* Dropdown más espacioso */
+.ss-dropdown {
+  max-height: 280px;
+  border-radius: 12px;
+  margin-top: 6px;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+}
+
+.ss-option {
+  padding: 12px 16px;         /* más espacio vertical */
+  gap: 6px;
+}
+
+.ss-option-main {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.ss-option-sub {
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  color: var(--text-secondary);
+}
+
+.ss-badge-stock {
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: var(--bg-overlay);
+}
+
+/* Estilo para la opción seleccionada (no aplica directamente, pero mejora hover) */
+.ss-option:hover {
+  background: var(--bg-overlay);
+}
+.form-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;         /* separación con el campo */
+  display: block;
+  color: var(--text-secondary);
+}
+.ss-input[data-selected="true"] {
+  font-weight: 500;
+  color: var(--accent);
+}

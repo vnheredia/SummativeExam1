@@ -1,11 +1,14 @@
 package com.biblioteca.bibliotecaddd.loans.infrastructure.adapter.output.persistence;
 
 import com.biblioteca.bibliotecaddd.loans.application.port.output.PrestamoRepositoryPort;
+import com.biblioteca.bibliotecaddd.loans.domain.model.EstadoPrestamo;
 import com.biblioteca.bibliotecaddd.loans.domain.model.Prestamo;
 import com.biblioteca.bibliotecaddd.loans.domain.model.valueobjects.IdPrestamo;
+import com.biblioteca.bibliotecaddd.loans.domain.model.valueobjects.MontoMulta;
 import com.biblioteca.bibliotecaddd.loans.domain.model.valueobjects.PeriodoPrestamo;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,6 +17,9 @@ import java.util.stream.Collectors;
 public class PrestamoRepositoryAdapter implements PrestamoRepositoryPort {
 
     private final PrestamoJpaRepository jpaRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public PrestamoRepositoryAdapter(PrestamoJpaRepository jpaRepository) {
         this.jpaRepository = jpaRepository;
@@ -30,7 +36,9 @@ public class PrestamoRepositoryAdapter implements PrestamoRepositoryPort {
                 prestamo.getPeriodo().getFechaLimite(),
                 prestamo.getMultaGenerada() != null ? prestamo.getMultaGenerada().value() : 0.0
         );
-        jpaRepository.save(entity);
+        jpaRepository.saveAndFlush(entity);
+        // Limpiar el contexto de persistencia para evitar que consultas posteriores devuelvan entidades cacheadas
+        entityManager.clear();
     }
 
     @Override
@@ -73,7 +81,9 @@ public class PrestamoRepositoryAdapter implements PrestamoRepositoryPort {
                 entity.getLibroCodigo(),
                 periodo
         );
-        
+        // Reconstruir el estado y la multa desde la entidad JPA
+        prestamo.setEstado(EstadoPrestamo.valueOf(entity.getEstado()));
+        prestamo.setMultaGenerada(new MontoMulta(entity.getMultaGenerada()));
         return prestamo;
     }
 }

@@ -8,4 +8,6 @@ public interface ReservaJpaRepository extends JpaRepository<ReservaJpaEntity, St
     List<ReservaJpaEntity> findByUsuarioIdAndEstado(String usuarioId, String estado);
     Optional<ReservaJpaEntity> findByUsuarioIdAndLibroCodigoAndEstado(String usuarioId, String libroCodigo, String estado);
     Optional<ReservaJpaEntity> findByLibroCodigoAndEstado(String libroCodigo, String estado);
+    boolean existsByLibroCodigoAndEstado(String libroCodigo, String estado);
+
 }

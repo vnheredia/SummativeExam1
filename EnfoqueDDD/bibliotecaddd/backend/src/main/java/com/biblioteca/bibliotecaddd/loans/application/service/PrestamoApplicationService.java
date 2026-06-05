@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class PrestamoApplicationService implements
         PrestarLibroUseCase,
-        DevolverLibroUseCase,          
+        DevolverLibroUseCase,
         ReservarLibroUseCase,
         CancelarReservaUseCase,
         MostrarPrestamosUseCase,
@@ -122,7 +122,7 @@ public class PrestamoApplicationService implements
 
         LocalDate hoy = LocalDate.now();
         LibroDevueltoEvent evento = prestamo.devolver(hoy);
-        prestamoRepository.save(prestamo);
+        prestamoRepository.save(prestamo);      // Guarda el cambio de estado
         actualizarStockPort.incrementarStock(prestamo.getLibroCodigo());
 
         if (evento.getMulta() != null && evento.getMulta().value() > 0) {
@@ -164,36 +164,39 @@ public class PrestamoApplicationService implements
                 .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada"));
         reserva.cancelar();
         reservaRepository.save(reserva);
+        // Recargar para forzar limpieza de caché
+        reserva = reservaRepository.findById(id).orElse(reserva);
     }
-        // ===== Para préstamos (MostrarPrestamosUseCase) =====
-        @Override
-        public List<PrestamoResponse> listarTodos() {
-            return prestamoRepository.findAll().stream()
-                    .map(this::toPrestamoResponse)
-                    .collect(Collectors.toList());
-        }
 
-        @Override
-        public List<PrestamoResponse> listarPorUsuario(String usuarioId) {
-            return prestamoRepository.findByUsuarioId(usuarioId).stream()
-                    .map(this::toPrestamoResponse)
-                    .collect(Collectors.toList());
-        }
+    // ===== Implementación de MostrarPrestamosUseCase =====
+    @Override
+    public List<PrestamoResponse> listarTodos() {
+        return prestamoRepository.findAll().stream()
+                .map(this::toPrestamoResponse)
+                .collect(Collectors.toList());
+    }
 
-        // ===== Para reservas (MostrarReservasUseCase) - CON OTROS NOMBRES =====
-        @Override
-        public List<ReservaResponse> listarTodasReservas() {
-            return reservaRepository.findAll().stream()
-                    .map(this::toReservaResponse)
-                    .collect(Collectors.toList());
-        }
+    @Override
+    public List<PrestamoResponse> listarPorUsuario(String usuarioId) {
+        return prestamoRepository.findByUsuarioId(usuarioId).stream()
+                .map(this::toPrestamoResponse)
+                .collect(Collectors.toList());
+    }
 
-        @Override
-        public List<ReservaResponse> listarReservasPorUsuario(String usuarioId) {
-            return reservaRepository.findActivasByUsuarioId(usuarioId).stream()
-                    .map(this::toReservaResponse)
-                    .collect(Collectors.toList());
-        }
+    // ===== Implementación de MostrarReservasUseCase =====
+    @Override
+    public List<ReservaResponse> listarTodasReservas() {
+        return reservaRepository.findAll().stream()
+                .map(this::toReservaResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ReservaResponse> listarReservasPorUsuario(String usuarioId) {
+        return reservaRepository.findActivasByUsuarioId(usuarioId).stream()
+                .map(this::toReservaResponse)
+                .collect(Collectors.toList());
+    }
 
     @Override
     public MultaResponse pagar(PagarMultasRequest request) {

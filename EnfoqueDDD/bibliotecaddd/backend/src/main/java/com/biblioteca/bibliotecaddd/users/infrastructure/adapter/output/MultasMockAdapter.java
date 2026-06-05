@@ -1,4 +1,4 @@
-package com.biblioteca.bibliotecaddd.users.infrastructure.adapter.output;
+/*package com.biblioteca.bibliotecaddd.users.infrastructure.adapter.output;
 
 import com.biblioteca.bibliotecaddd.users.application.port.output.ConsultarMultasPort;
 import org.springframework.stereotype.Component;
@@ -11,3 +11,4 @@ public class MultasMockAdapter implements ConsultarMultasPort {
         return false;
     }
 }
+*/

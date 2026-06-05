@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biblioteca DDD — Sistema de Gestión</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <script>
+    // Session guard — redirect to login if not authenticated
+    if (!sessionStorage.getItem('bib_session')) {
+      window.location.replace('login.html');
+    }
+  </script>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect x="2" y="4" width="6" height="20" rx="1" fill="currentColor" opacity="0.9"/>
+          <rect x="10" y="4" width="6" height="20" rx="1" fill="currentColor" opacity="0.7"/>
+          <rect x="18" y="4" width="8" height="20" rx="1" fill="currentColor" opacity="0.5"/>
+        </svg>
+      </div>
+      <div>
+        <span class="logo-title">Biblioteca</span>
+        <span class="logo-sub">DDD System</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Principal</div>
+      <a href="#" class="nav-item active" data-page="dashboard">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Dashboard</span>
+      </a>
+
+      <div class="nav-section-label">Catálogo</div>
+      <a href="#" class="nav-item" data-page="libros">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>Libros</span>
+      </a>
+
+      <div class="nav-section-label">Usuarios</div>
+      <a href="#" class="nav-item" data-page="usuarios">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Usuarios</span>
+      </a>
+
+      <div class="nav-section-label">Circulación</div>
+      <a href="#" class="nav-item" data-page="prestamos">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        <span>Préstamos</span>
+      </a>
+      <a href="#" class="nav-item" data-page="reservas">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span>Reservas</span>
+      </a>
+      <a href="#" class="nav-item" data-page="multas">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span>Multas</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-footer-info">Sistema v1.0</div>
+    </div>
+  </aside>
+
+  <!-- Overlay for mobile -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Main -->
+  <main class="main">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-btn" id="menuBtn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="page-breadcrumb">
+          <span id="breadcrumbTitle">Dashboard</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-badge" id="topbarInfo">Sistema activo</div>
+        <div class="topbar-user" id="topbarUser"></div>
+        <button class="btn-logout" id="btnLogout" title="Cerrar sesión">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          <span>Salir</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <div class="page-content">
+
+      <!-- DASHBOARD -->
+      <section class="page" id="page-dashboard">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Dashboard</h1>
+            <p class="page-desc">Resumen general del sistema de biblioteca</p>
+          </div>
+        </div>
+        <div class="stats-grid" id="dashboardStats">
+          <div class="stat-card">
+            <div class="stat-icon stat-icon--blue">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Total Libros</span>
+              <span class="stat-value" id="stat-libros">—</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon stat-icon--green">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Total Usuarios</span>
+              <span class="stat-value" id="stat-usuarios">—</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon stat-icon--amber">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Préstamos Activos</span>
+              <span class="stat-value" id="stat-prestamos">—</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon stat-icon--rose">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Reservas Activas</span>
+              <span class="stat-value" id="stat-reservas">—</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-bottom">
+          <div class="recent-card">
+            <div class="card-header">
+              <h3 class="card-title">Libros Recientes</h3>
+            </div>
+            <div class="card-body" id="dashRecentLibros"><div class="loading-row">Cargando...</div></div>
+          </div>
+          <div class="recent-card">
+            <div class="card-header">
+              <h3 class="card-title">Préstamos Recientes</h3>
+            </div>
+            <div class="card-body" id="dashRecentPrestamos"><div class="loading-row">Cargando...</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- LIBROS -->
+      <section class="page hidden" id="page-libros">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Catálogo de Libros</h1>
+            <p class="page-desc">Gestión del inventario bibliográfico</p>
+          </div>
+          <button class="btn btn-primary" id="btnNuevoLibro">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nuevo Libro
+          </button>
+        </div>
+
+        <div class="search-bar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="searchLibros" placeholder="Buscar por título, autor o código…" />
+        </div>
+
+        <div class="table-wrapper">
+          <table class="data-table" id="tablaLibros">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Stock</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyLibros">
+              <tr><td colspan="5" class="loading-cell">Cargando libros…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- USUARIOS -->
+      <section class="page hidden" id="page-usuarios">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Gestión de Usuarios</h1>
+            <p class="page-desc">Registro y administración de socios</p>
+          </div>
+          <button class="btn btn-primary" id="btnNuevoUsuario">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nuevo Usuario
+          </button>
+        </div>
+
+        <div class="search-bar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="searchUsuarios" placeholder="Buscar por nombre o ID…" />
+        </div>
+
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyUsuarios">
+              <tr><td colspan="3" class="loading-cell">Cargando usuarios…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- PRÉSTAMOS -->
+      <section class="page hidden" id="page-prestamos">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Préstamos</h1>
+            <p class="page-desc">Registro y control de préstamos activos</p>
+          </div>
+          <button class="btn btn-primary" id="btnNuevoPrestamo">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nuevo Préstamo
+          </button>
+        </div>
+
+        <div class="filter-row">
+          <div class="search-bar" style="flex:1">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="filterPrestamosUsuario" placeholder="Filtrar por ID de usuario…" />
+          </div>
+          <button class="btn btn-ghost" id="btnFiltrarPrestamos">Filtrar</button>
+          <button class="btn btn-ghost" id="btnTodosPrestamos">Todos</button>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Libro</th>
+                <th>Estado</th>
+                <th>Fecha Límite</th>
+                <th>Multa</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyPrestamos">
+              <tr><td colspan="7" class="loading-cell">Cargando préstamos…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- RESERVAS -->
+      <section class="page hidden" id="page-reservas">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Reservas</h1>
+            <p class="page-desc">Control de reservas de libros</p>
+          </div>
+          <button class="btn btn-primary" id="btnNuevaReserva">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nueva Reserva
+          </button>
+        </div>
+
+        <div class="filter-row">
+          <div class="search-bar" style="flex:1">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="filterReservasUsuario" placeholder="Filtrar por ID de usuario…" />
+          </div>
+          <button class="btn btn-ghost" id="btnFiltrarReservas">Filtrar</button>
+          <button class="btn btn-ghost" id="btnTodasReservas">Todas</button>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Libro</th>
+                <th>Estado</th>
+                <th>Fecha Reserva</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyReservas">
+              <tr><td colspan="6" class="loading-cell">Cargando reservas…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- MULTAS -->
+      <section class="page hidden" id="page-multas">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Multas</h1>
+            <p class="page-desc">Consulta y pago de multas por retraso</p>
+          </div>
+        </div>
+
+        <div class="multas-panel">
+          <div class="multa-query-card">
+            <h3 class="card-title">Consultar Multas por Usuario</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">ID de Usuario</label>
+                <input type="text" class="form-input" id="multaUsuarioId" placeholder="Ej: user-001" />
+              </div>
+              <button class="btn btn-primary" id="btnConsultarMulta">Consultar</button>
+            </div>
+            <div id="multaResult" class="multa-result hidden"></div>
+          </div>
+
+          <div class="multa-query-card">
+            <h3 class="card-title">Pagar Multas de Préstamo</h3>
+            <p class="form-help">Paga multas generadas durante la devolución de un libro.</p>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">ID de Préstamo</label>
+                <input type="text" class="form-input" id="multaPrestamoId" placeholder="Ej: prestamo-001" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">ID de Usuario</label>
+                <input type="text" class="form-input" id="multaPagarUsuarioId" placeholder="Ej: user-001" />
+              </div>
+              <button class="btn btn-primary" id="btnPagarMulta">Pagar</button>
+            </div>
+            <div id="multaPagoResult" class="multa-result hidden"></div>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- end page-content -->
+  </main>
+
+  <!-- MODALS -->
+
+  <!-- Modal: Nuevo/Editar Libro -->
+  <div class="modal-overlay hidden" id="modalLibro">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalLibroTitle">Registrar Libro</h2>
+        <button class="modal-close" data-close="modalLibro">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="libroEditCodigo" />
+        <div class="form-group">
+          <label class="form-label">Código del Libro *</label>
+          <input type="text" class="form-input" id="libroCodigo" placeholder="Ej: LIB-001" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Título *</label>
+          <input type="text" class="form-input" id="libroTitulo" placeholder="Título completo del libro" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Autor *</label>
+          <input type="text" class="form-input" id="libroAutor" placeholder="Nombre del autor" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Stock *</label>
+          <input type="number" class="form-input" id="libroStock" min="0" placeholder="0" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="modalLibro">Cancelar</button>
+        <button class="btn btn-primary" id="btnGuardarLibro">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Nuevo/Editar Usuario -->
+  <div class="modal-overlay hidden" id="modalUsuario">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalUsuarioTitle">Registrar Usuario</h2>
+        <button class="modal-close" data-close="modalUsuario">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="usuarioEditId" />
+        <div class="form-group">
+          <label class="form-label">ID de Usuario *</label>
+          <input type="text" class="form-input" id="usuarioId" placeholder="Ej: user-001" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nombre Completo *</label>
+          <input type="text" class="form-input" id="usuarioNombre" placeholder="Nombre completo" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="modalUsuario">Cancelar</button>
+        <button class="btn btn-primary" id="btnGuardarUsuario">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Nuevo Préstamo -->
+  <div class="modal-overlay hidden" id="modalPrestamo">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Registrar Préstamo</h2>
+        <button class="modal-close" data-close="modalPrestamo">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">ID de Usuario *</label>
+          <input type="text" class="form-input" id="prestamoUsuarioId" placeholder="Ej: user-001" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Código del Libro *</label>
+          <input type="text" class="form-input" id="prestamoLibroCodigo" placeholder="Ej: LIB-001" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="modalPrestamo">Cancelar</button>
+        <button class="btn btn-primary" id="btnGuardarPrestamo">Prestar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Devolver Libro -->
+  <div class="modal-overlay hidden" id="modalDevolucion">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Devolver Libro</h2>
+        <button class="modal-close" data-close="modalDevolucion">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-info">Se registrará la devolución del préstamo. Si hay retraso, se calculará automáticamente la multa.</p>
+        <div class="form-group">
+          <label class="form-label">ID del Préstamo</label>
+          <input type="text" class="form-input" id="devolucionPrestamoId" readonly />
+        </div>
+        <div class="form-group">
+          <label class="form-label">ID de Usuario</label>
+          <input type="text" class="form-input" id="devolucionUsuarioId" readonly />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="modalDevolucion">Cancelar</button>
+        <button class="btn btn-primary" id="btnConfirmarDevolucion">Confirmar Devolución</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Nueva Reserva -->
+  <div class="modal-overlay hidden" id="modalReserva">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Nueva Reserva</h2>
+        <button class="modal-close" data-close="modalReserva">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">ID de Usuario *</label>
+          <input type="text" class="form-input" id="reservaUsuarioId" placeholder="Ej: user-001" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Código del Libro *</label>
+          <input type="text" class="form-input" id="reservaLibroCodigo" placeholder="Ej: LIB-001" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="modalReserva">Cancelar</button>
+        <button class="btn btn-primary" id="btnGuardarReserva">Reservar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Cancelar Reserva -->
+  <div class="modal-overlay hidden" id="modalCancelarReserva">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Cancelar Reserva</h2>
+        <button class="modal-close" data-close="modalCancelarReserva">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-info">Se cancelará la reserva seleccionada.</p>
+        <div class="form-group">
+          <label class="form-label">ID de la Reserva</label>
+          <input type="text" class="form-input" id="cancelarReservaId" readonly />
+        </div>
+        <div class="form-group">
+          <label class="form-label">ID de Usuario</label>
+          <input type="text" class="form-input" id="cancelarReservaUsuarioId" readonly />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="modalCancelarReserva">No cancelar</button>
+        <button class="btn btn-danger" id="btnConfirmarCancelarReserva">Cancelar Reserva</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Delete Modal -->
+  <div class="modal-overlay hidden" id="modalConfirm">
+    <div class="modal modal--sm">
+      <div class="modal-header">
+        <h2 class="modal-title">Confirmar eliminación</h2>
+      </div>
+      <div class="modal-body">
+        <p class="modal-info" id="modalConfirmMsg">¿Estás seguro de que deseas eliminar este elemento?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="modalConfirm">Cancelar</button>
+        <button class="btn btn-danger" id="btnConfirmDelete">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

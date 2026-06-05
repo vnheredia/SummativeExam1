@@ -1,18 +1,10 @@
 package com.biblioteca.bibliotecaddd.loans.infrastructure.adapter.output.persistence;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "reservas")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class ReservaJpaEntity {
     @Id
     private String id;
@@ -20,4 +12,25 @@ public class ReservaJpaEntity {
     private String libroCodigo;
     private String estado;
     private LocalDate fechaReserva;
+
+    public ReservaJpaEntity() {}
+    public ReservaJpaEntity(String id, String usuarioId, String libroCodigo, String estado, LocalDate fechaReserva) {
+        this.id = id;
+        this.usuarioId = usuarioId;
+        this.libroCodigo = libroCodigo;
+        this.estado = estado;
+        this.fechaReserva = fechaReserva;
+    }
+
+    // Getters y setters
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
+    public String getUsuarioId() { return usuarioId; }
+    public void setUsuarioId(String usuarioId) { this.usuarioId = usuarioId; }
+    public String getLibroCodigo() { return libroCodigo; }
+    public void setLibroCodigo(String libroCodigo) { this.libroCodigo = libroCodigo; }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
+    public LocalDate getFechaReserva() { return fechaReserva; }
+    public void setFechaReserva(LocalDate fechaReserva) { this.fechaReserva = fechaReserva; }
 }

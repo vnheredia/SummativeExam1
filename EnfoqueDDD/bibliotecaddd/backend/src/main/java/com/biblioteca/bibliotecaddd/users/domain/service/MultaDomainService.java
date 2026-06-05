@@ -1,15 +1,16 @@
 package com.biblioteca.bibliotecaddd.users.domain.service;
 
+import com.biblioteca.bibliotecaddd.users.application.port.output.MultaRepositoryPort;
 import com.biblioteca.bibliotecaddd.users.domain.model.Multa;
 import com.biblioteca.bibliotecaddd.users.domain.model.valueobjects.UserId;
-import com.biblioteca.bibliotecaddd.users.domain.repository.MultaRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MultaDomainService {
-    private final MultaRepository multaRepository;
 
-    public MultaDomainService(MultaRepository multaRepository) {
+    private final MultaRepositoryPort multaRepository;
+
+    public MultaDomainService(MultaRepositoryPort multaRepository) {
         this.multaRepository = multaRepository;
     }
 

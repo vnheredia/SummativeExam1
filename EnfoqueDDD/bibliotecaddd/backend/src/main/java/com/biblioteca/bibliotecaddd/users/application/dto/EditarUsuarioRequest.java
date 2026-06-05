@@ -1,14 +1,11 @@
 package com.biblioteca.bibliotecaddd.users.application.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class EditarUsuarioRequest {
-    @NotBlank
-    private String nombre;
+    @NotBlank private String nombre;
+    public EditarUsuarioRequest() {}
+    public EditarUsuarioRequest(String nombre) { this.nombre = nombre; }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 }

@@ -2,13 +2,7 @@ package com.biblioteca.bibliotecaddd.users.application.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class RegistrarUsuarioRequest {
     @NotBlank
     @Pattern(regexp = "^[a-zA-Z0-9\\-]{5,20}$", message = "ID inválido")
@@ -16,4 +10,11 @@ public class RegistrarUsuarioRequest {
 
     @NotBlank
     private String nombre;
+
+    public RegistrarUsuarioRequest() {}
+    public RegistrarUsuarioRequest(String id, String nombre) { this.id = id; this.nombre = nombre; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 }

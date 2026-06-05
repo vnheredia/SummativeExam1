@@ -1,9 +1,7 @@
 package com.biblioteca.bibliotecaddd.loans.domain.events;
 
 import com.biblioteca.bibliotecaddd.loans.domain.model.valueobjects.MontoMulta;
-import lombok.Getter;
 
-@Getter
 public class LibroDevueltoEvent {
     private final String prestamoId;
     private final String usuarioId;
@@ -16,4 +14,9 @@ public class LibroDevueltoEvent {
         this.libroCodigo = libroCodigo;
         this.multa = multa;
     }
+
+    public String getPrestamoId() { return prestamoId; }
+    public String getUsuarioId() { return usuarioId; }
+    public String getLibroCodigo() { return libroCodigo; }
+    public MontoMulta getMulta() { return multa; }
 }

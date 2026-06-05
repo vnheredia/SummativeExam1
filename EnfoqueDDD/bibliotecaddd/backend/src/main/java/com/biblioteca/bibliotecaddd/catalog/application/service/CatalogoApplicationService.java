@@ -4,10 +4,13 @@ import com.biblioteca.bibliotecaddd.catalog.application.dto.EditarLibroRequest;
 import com.biblioteca.bibliotecaddd.catalog.application.dto.LibroResponse;
 import com.biblioteca.bibliotecaddd.catalog.application.dto.RegistrarLibroRequest;
 import com.biblioteca.bibliotecaddd.catalog.application.port.input.*;
+import com.biblioteca.bibliotecaddd.catalog.application.port.output.ConsultarPrestamosPorLibroPort;
+import com.biblioteca.bibliotecaddd.catalog.application.port.output.ConsultarReservasPorLibroPort;
 import com.biblioteca.bibliotecaddd.catalog.application.port.output.LibroRepositoryPort;
 import com.biblioteca.bibliotecaddd.catalog.domain.model.Libro;
 import com.biblioteca.bibliotecaddd.catalog.domain.model.valueobjects.*;
 import com.biblioteca.bibliotecaddd.catalog.domain.service.CatalogoDomainService;
+import com.biblioteca.bibliotecaddd.shared.domain.exceptions.BusinessRuleException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,10 +28,17 @@ public class CatalogoApplicationService implements
 
     private final LibroRepositoryPort repository;
     private final CatalogoDomainService domainService;
+    private final ConsultarPrestamosPorLibroPort consultarPrestamosPort;
+    private final ConsultarReservasPorLibroPort consultarReservasPort;
 
-    public CatalogoApplicationService(LibroRepositoryPort repository, CatalogoDomainService domainService) {
+    public CatalogoApplicationService(LibroRepositoryPort repository,
+                                      CatalogoDomainService domainService,
+                                      ConsultarPrestamosPorLibroPort consultarPrestamosPort,
+                                      ConsultarReservasPorLibroPort consultarReservasPort) {
         this.repository = repository;
         this.domainService = domainService;
+        this.consultarPrestamosPort = consultarPrestamosPort;
+        this.consultarReservasPort = consultarReservasPort;
     }
 
     @Override
@@ -73,6 +83,17 @@ public class CatalogoApplicationService implements
     @Override
     public void eliminar(String codigo) {
         CodigoLibro cod = new CodigoLibro(codigo);
+
+        // Validar que no tenga préstamos activos
+        if (consultarPrestamosPort.existsActivoByLibroCodigo(codigo)) {
+            throw new BusinessRuleException("No se puede eliminar el libro porque tiene préstamos activos.");
+        }
+
+        // Validar que no tenga reservas activas
+        if (consultarReservasPort.existsActivaByLibroCodigo(codigo)) {
+            throw new BusinessRuleException("No se puede eliminar el libro porque tiene reservas activas.");
+        }
+
         Libro libro = repository.findByCodigo(cod)
                 .orElseThrow(() -> new IllegalArgumentException("Libro no encontrado"));
         repository.delete(libro);

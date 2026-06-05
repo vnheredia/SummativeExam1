@@ -42,4 +42,9 @@ public class Reserva {
     public String getLibroCodigo() { return libroCodigo; }
     public LocalDate getFechaReserva() { return fechaReserva; }
     public EstadoReserva getEstado() { return estado; }
+
+    // Setter público para reconstrucción (solo para el adaptador)
+    public void setEstado(EstadoReserva estado) {
+        this.estado = estado;
+    }
 }

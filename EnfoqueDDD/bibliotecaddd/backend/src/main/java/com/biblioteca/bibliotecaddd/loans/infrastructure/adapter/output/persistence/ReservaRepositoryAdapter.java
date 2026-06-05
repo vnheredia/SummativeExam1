@@ -1,8 +1,11 @@
 package com.biblioteca.bibliotecaddd.loans.infrastructure.adapter.output.persistence;
 
 import com.biblioteca.bibliotecaddd.loans.application.port.output.ReservaRepositoryPort;
+import com.biblioteca.bibliotecaddd.loans.domain.model.EstadoReserva;
 import com.biblioteca.bibliotecaddd.loans.domain.model.Reserva;
 import com.biblioteca.bibliotecaddd.loans.domain.model.valueobjects.IdReserva;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +15,9 @@ import java.util.stream.Collectors;
 public class ReservaRepositoryAdapter implements ReservaRepositoryPort {
 
     private final ReservaJpaRepository jpaRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public ReservaRepositoryAdapter(ReservaJpaRepository jpaRepository) {
         this.jpaRepository = jpaRepository;
@@ -26,32 +32,41 @@ public class ReservaRepositoryAdapter implements ReservaRepositoryPort {
                 reserva.getEstado().toString(),
                 reserva.getFechaReserva()
         );
-        jpaRepository.save(entity);
+        jpaRepository.saveAndFlush(entity);
+        // Limpiar el contexto de persistencia para evitar que consultas posteriores devuelvan entidades cacheadas
+        entityManager.clear();
     }
 
     @Override
     public Optional<Reserva> findById(IdReserva id) {
-        return jpaRepository.findById(id.getValue()).map(this::toDomain);
+        return jpaRepository.findById(id.getValue())
+                .map(this::toDomain);
     }
 
     @Override
     public List<Reserva> findAll() {
-        return jpaRepository.findAll().stream().map(this::toDomain).collect(Collectors.toList());
+        return jpaRepository.findAll().stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Reserva> findActivasByUsuarioId(String usuarioId) {
-        return jpaRepository.findByUsuarioIdAndEstado(usuarioId, "ACTIVA").stream().map(this::toDomain).collect(Collectors.toList());
+        return jpaRepository.findByUsuarioIdAndEstado(usuarioId, "ACTIVA").stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
     }
 
     @Override
     public Optional<Reserva> findActivaByUsuarioAndLibro(String usuarioId, String libroCodigo) {
-        return jpaRepository.findByUsuarioIdAndLibroCodigoAndEstado(usuarioId, libroCodigo, "ACTIVA").map(this::toDomain);
+        return jpaRepository.findByUsuarioIdAndLibroCodigoAndEstado(usuarioId, libroCodigo, "ACTIVA")
+                .map(this::toDomain);
     }
 
     @Override
     public Optional<Reserva> findActivaByLibro(String libroCodigo) {
-        return jpaRepository.findByLibroCodigoAndEstado(libroCodigo, "ACTIVA").map(this::toDomain);
+        return jpaRepository.findByLibroCodigoAndEstado(libroCodigo, "ACTIVA")
+                .map(this::toDomain);
     }
 
     private Reserva toDomain(ReservaJpaEntity entity) {
@@ -61,8 +76,8 @@ public class ReservaRepositoryAdapter implements ReservaRepositoryPort {
                 entity.getLibroCodigo(),
                 entity.getFechaReserva()
         );
-        // Necesitamos un método para cambiar el estado al reconstruir desde BD
-        // Por simplicidad, asumimos que se puede setear con un método de paquete.
+        // Reconstruir el estado desde la entidad JPA
+        reserva.setEstado(EstadoReserva.valueOf(entity.getEstado()));
         return reserva;
     }
 }

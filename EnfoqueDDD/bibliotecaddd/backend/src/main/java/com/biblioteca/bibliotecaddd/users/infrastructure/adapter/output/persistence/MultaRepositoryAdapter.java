@@ -1,13 +1,13 @@
 package com.biblioteca.bibliotecaddd.users.infrastructure.adapter.output.persistence;
 
+import com.biblioteca.bibliotecaddd.users.application.port.output.MultaRepositoryPort;
 import com.biblioteca.bibliotecaddd.users.domain.model.Multa;
 import com.biblioteca.bibliotecaddd.users.domain.model.valueobjects.UserId;
-import com.biblioteca.bibliotecaddd.users.domain.repository.MultaRepository;
 import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-public class MultaRepositoryAdapter implements MultaRepository {
+public class MultaRepositoryAdapter implements MultaRepositoryPort {
 
     private final MultaJpaRepository jpaRepository;
 

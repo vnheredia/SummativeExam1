@@ -1,4 +1,4 @@
-package com.biblioteca.bibliotecaddd.users.domain.repository;
+/*package com.biblioteca.bibliotecaddd.users.domain.repository;
 
 import com.biblioteca.bibliotecaddd.users.domain.model.Usuario;
 import com.biblioteca.bibliotecaddd.users.domain.model.valueobjects.UserId;
@@ -12,3 +12,4 @@ public interface UsuarioRepository {
     boolean existsById(UserId id);
     void delete(Usuario usuario);
 }
+*/

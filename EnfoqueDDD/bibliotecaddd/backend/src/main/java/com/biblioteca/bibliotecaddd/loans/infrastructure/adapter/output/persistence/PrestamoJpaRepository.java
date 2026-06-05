@@ -11,4 +11,5 @@ public interface PrestamoJpaRepository extends JpaRepository<PrestamoJpaEntity, 
     List<PrestamoJpaEntity> findByUsuarioIdAndEstado(String usuarioId, String estado);
     @Query("SELECT COUNT(p) > 0 FROM PrestamoJpaEntity p WHERE p.usuarioId = :usuarioId AND p.libroCodigo = :libroCodigo AND p.estado = 'ACTIVO'")
     boolean existsActivoByUsuarioAndLibro(@Param("usuarioId") String usuarioId, @Param("libroCodigo") String libroCodigo);
+    boolean existsByLibroCodigoAndEstado(String libroCodigo, String estado);
 }

@@ -1,19 +1,18 @@
 package com.biblioteca.bibliotecaddd.users.infrastructure.adapter.output.persistence;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "usuarios")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class UsuarioJpaEntity {
     @Id
     private String id;
     private String nombre;
+
+    public UsuarioJpaEntity() {}
+    public UsuarioJpaEntity(String id, String nombre) { this.id = id; this.nombre = nombre; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 }

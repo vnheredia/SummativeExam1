@@ -1,0 +1,13 @@
+package com.biblioteca.bibliotecaddd.users.application.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class UsuarioResponse {
+    private String id;
+    private String nombre;
+}
